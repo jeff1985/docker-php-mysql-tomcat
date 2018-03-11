@@ -1,7 +1,7 @@
 # Composer Docker Container
 # Base Dockerfile: composer/base
 FROM php:7.1-cli
-MAINTAINER Rob Loach <robloach@gmail.com>
+MAINTAINER Evgeny Anisiforov <evgeny@anisiforov.de>
 
 # Packages
 RUN apt-get update && \
@@ -18,7 +18,10 @@ RUN apt-get update && \
     subversion \
     unzip \
     wget \
-  && rm -r /var/lib/apt/lists/*
+    aha \
+    zip \
+    apt-transport-https zlib1g-dev libicu-dev g++ \
+    && rm -r /var/lib/apt/lists/*
 
 #php-pear \ mcrypt
 
@@ -27,7 +30,27 @@ RUN docker-php-ext-install bcmath  zip bz2 mbstring pcntl xsl gd sockets \
   && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
   && docker-php-ext-install gd \
   && docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu/ \
-  && docker-php-ext-install ldap
+  && docker-php-ext-install ldap \
+  && docker-php-ext-install gettext \
+  && docker-php-ext-configure intl \
+  && docker-php-ext-install intl \
+  && docker-php-ext-install mcrypt \
+  && docker-php-ext-install pdo_mysql simplexml \
+  && docker-php-ext-install soap
+
+# Install memcache extension (from https://hub.docker.com/r/aneotop/docker-php7-fpm-memcache/~/dockerfile/ )
+RUN set -x \
+    && apt-get update && apt-get install -y --no-install-recommends unzip libssl-dev libpcre3 libpcre3-dev \
+    && cd /tmp \
+    && curl -sSL -o php7.zip https://github.com/websupport-sk/pecl-memcache/archive/php7.zip \
+    && unzip php7 \
+    && cd pecl-memcache-php7 \
+    && /usr/local/bin/phpize \
+    && ./configure --with-php-config=/usr/local/bin/php-config \
+    && make \
+    && make install \
+    && echo "extension=memcache.so" > /usr/local/etc/php/conf.d/ext-memcache.ini \
+    && rm -rf /tmp/pecl-memcache-php7 php7.zip
 
 # Memory Limit
 RUN echo "memory_limit=-1" > $PHP_INI_DIR/conf.d/memory-limit.ini
