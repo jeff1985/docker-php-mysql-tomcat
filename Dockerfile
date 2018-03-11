@@ -35,7 +35,7 @@ RUN docker-php-ext-install bcmath  zip bz2 mbstring pcntl xsl gd sockets \
   && docker-php-ext-configure intl \
   && docker-php-ext-install intl \
   && docker-php-ext-install mcrypt \
-  && docker-php-ext-install pdo_mysql simplexml \
+  && docker-php-ext-install pdo_mysql simplexml mysqli \
   && docker-php-ext-install soap
 
 # Install memcache extension (from https://hub.docker.com/r/aneotop/docker-php7-fpm-memcache/~/dockerfile/ )
