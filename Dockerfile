@@ -1,6 +1,6 @@
 # Composer Docker Container
 # Base Dockerfile: composer/base
-FROM php:7.1-cli
+FROM php:7.1-cli-jessie
 MAINTAINER Evgeny Anisiforov <evgeny@anisiforov.de>
 
 # Packages
@@ -20,6 +20,7 @@ RUN apt-get update && \
     wget \
     aha \
     zip \
+    mysql-server \
     apt-transport-https zlib1g-dev libicu-dev g++ \
     && rm -r /var/lib/apt/lists/*
 
