@@ -1,5 +1,5 @@
 # Composer Docker Container
-# Base Dockerfile: composer/base
+# for debugging use: docker run -it --entrypoint="bash" jeff1985/docker-php-mysql-tomcat
 FROM php:7.1-cli-jessie
 MAINTAINER Evgeny Anisiforov <evgeny@anisiforov.de>
 
@@ -79,7 +79,7 @@ RUN curl -o /tmp/composer-setup.php https://getcomposer.org/installer \
   && php -r "if (hash('SHA384', file_get_contents('/tmp/composer-setup.php')) !== trim(file_get_contents('/tmp/composer-setup.sig'))) { unlink('/tmp/composer-setup.php'); echo 'Invalid installer' . PHP_EOL; exit(1); }"
 
 # Set up the volumes and working directory
-VOLUME ["/app"]
+VOLUME ["/app", "/var/lib/mysql"]
 WORKDIR /app
 
 # Set up the command arguments
